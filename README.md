@@ -1,83 +1,109 @@
-🚀 Cosmic Lens Lite
-A Production-Grade NASA APOD Explorer built with Flutter & Provider
+# 🚀 Cosmic Lens Lite
+**A Production-Grade NASA APOD Explorer built with Flutter & Provider**
 
-📖 Project Overview
-Cosmic Lens Lite is a robust mobile application designed to explore the cosmos using the NASA Astronomy Picture of the Day (APOD) API.
+---
 
-Unlike simple tutorial apps, this project was architected to demonstrate production-grade engineering principles. It features robust state management, defensive handling of complex API data (polymorphic media types), intelligent local caching for network efficiency, and a cross-platform responsive design that works seamlessly on both Mobile and Web.
+## 📖 Project Overview
 
-✨ Key Features
-1. Core Functionality
-Daily Astronomy Feed: Fetches and displays high-resolution images and detailed scientific explanations from NASA's live API.
+**Cosmic Lens Lite** is a robust mobile application designed to explore the cosmos using the **NASA Astronomy Picture of the Day (APOD) API**.
 
-Time Travel Mode: Users can query specific historical dates using a native Date Picker to view past astronomical events (e.g., birthdays, historic launches).
+Unlike simple tutorial apps, this project was architected to demonstrate **production-grade engineering principles**. It features robust state management, defensive handling of complex API data (polymorphic media types), intelligent local caching for network efficiency, and a cross-platform responsive design that works seamlessly on both Mobile and Web.
 
-Swipe Navigation: "Tinder-style" gesture navigation allows users to intuitively swipe left/right to browse through previous and next days seamlessly.
+---
 
-2. Advanced Media Handling
-Polymorphic Data Support: The app intelligently detects the media_type returned by the API.
+## ✨ Key Features
 
-Images: Rendered with CachedNetworkImage for performance and offline capability.
+### 1. **Core Functionality**
+* **Daily Astronomy Feed:** Fetches and displays high-resolution images and detailed scientific explanations from NASA's live API.
+* **Time Travel Mode:** Users can query specific historical dates using a native Date Picker to view past astronomical events (e.g., birthdays, historic launches).
+* **Swipe Navigation:** "Tinder-style" gesture navigation allows users to intuitively swipe left/right to browse through previous and next days seamlessly.
 
-Videos: Handled via a custom "Watch Video" interface that deep-links to YouTube/Vimeo using url_launcher, preventing crashes on video-only days.
+### 2. **Advanced Media Handling**
+* **Polymorphic Data Support:** The app intelligently detects the `media_type` returned by the API.
+    * **Images:** Rendered with `CachedNetworkImage` for performance and offline capability.
+    * **Videos:** Handled via a custom "Watch Video" interface that deep-links to YouTube/Vimeo using `url_launcher`, preventing crashes on video-only days.
 
-3. Performance & Optimization
-Smart In-Memory Caching: Implements a HashMap-based caching strategy (Map<String, ApodModel>). Once a date is fetched, it is stored locally, ensuring instant load times (0ms) and zero network cost when swiping back to previously viewed days.
+### 3. **Performance & Optimization**
+* **Smart In-Memory Caching:** Implements a HashMap-based caching strategy (`Map<String, ApodModel>`). Once a date is fetched, it is stored locally, ensuring **instant load times (0ms)** and zero network cost when swiping back to previously viewed days.
+* **Pull-to-Refresh:** Users can pull down to instantly reset the application state to "Today," clearing temporary navigation history.
 
-Pull-to-Refresh: Users can pull down to instantly reset the application state to "Today," clearing temporary navigation history.
+### 4. **UI/UX & Responsiveness**
+* **Cross-Platform Responsive Design:**
+    * **Mobile:** Uses native `ListView` and flexible widgets for a perfect fit on all screen sizes.
+    * **Web:** Implements a `ConstrainedBox` architecture (`maxWidth: 600px`) to maintain a clean, mobile-app-like experience on desktop browsers without awkward stretching.
+* **Defensive UI:** Graceful handling of missing API data (null safety) ensures users never see technical error messages.
+* **Premium Splash Screen:** Features a custom "Breathing" animation (Fade + Scale) for a polished app launch experience.
 
-4. UI/UX & Responsiveness
-Cross-Platform Responsive Design:
+---
 
-Mobile: Uses native ListView and flexible widgets for a perfect fit on all screen sizes.
+## 🛠 Technical Architecture
 
-Web: Implements a ConstrainedBox architecture (maxWidth: 600px) to maintain a clean, mobile-app-like experience on desktop browsers without awkward stretching.
+The project follows a strict **Layered Architecture** to ensure maintainability and scalability.
 
-Defensive UI: Graceful handling of missing API data (null safety) ensures users never see technical error messages.
+### **1. Data Layer (`lib/models`, `lib/services`)**
+* **Robust Models:** `ApodModel` includes defensive `fromJson` parsing logic to handle null values gracefully (e.g., missing copyright info) and normalize data types.
+* **Service Isolation:** `ApiService` abstracts all HTTP logic, endpoint construction, and exception handling from the rest of the app.
 
-Premium Splash Screen: Features a custom "Breathing" animation (Fade + Scale) for a polished app launch experience.
+### **2. State Management (`lib/providers`)**
+* **Provider Pattern:** Uses `ChangeNotifier` to manage global application state.
+* **Logic Flow:** The Provider handles the business logic for:
+    * Fetching data.
+    * Managing the cache.
+    * Updating `isLoading` and `errorMessage` states.
+    * Notifying the UI only when necessary to minimize rebuilds.
 
-🛠 Technical Architecture
-The project follows a strict Layered Architecture to ensure maintainability and scalability.
+### **3. UI Layer (`lib/screens`)**
+* **Passive Views:** Screens are "dumb" widgets that simply consume data from the Provider.
+* **Gesture Logic:** Complex interaction logic (Swipe detection) is handled directly in the UI layer to control navigation intent before passing requests to the Provider.
 
-1. Data Layer (lib/models, lib/services)
-Robust Models: ApodModel includes defensive fromJson parsing logic to handle null values gracefully (e.g., missing copyright info) and normalize data types.
+---
 
-Service Isolation: ApiService abstracts all HTTP logic, endpoint construction, and exception handling from the rest of the app.
+## 🧰 Tech Stack & Dependencies
 
-2. State Management (lib/providers)
-Provider Pattern: Uses ChangeNotifier to manage global application state.
+* **Framework:** Flutter (Dart)
+* **State Management:** `provider` (v6.x)
+* **Networking:** `http`
+* **APIs:** [NASA APOD API](https://api.nasa.gov/)
+* **Key Packages:**
+    * `cached_network_image`: For efficient image rendering and caching.
+    * `url_launcher`: For handling external video links securely.
+    * `intl`: For precise date formatting (`YYYY-MM-DD`).
+    * `google_fonts`: For themed typography (Orbitron).
 
-Logic Flow: The Provider handles the business logic for:
+---
 
-Fetching data.
+## 💡 Engineering Decisions (Interview Talking Points)
 
-Managing the cache.
+1.  **Why Provider?**
+    * Chosen for its lightweight footprint and ease of testing compared to heavier solutions like BLoC, while still offering excellent separation of business logic for this scale of application.
 
-Updating isLoading and errorMessage states.
+2.  **The "Video Trap" Solution:**
+    * Recognized that NASA's API returns different JSON structures for videos. Implemented a `media_type` check in the Model layer to branch UI logic, ensuring 100% stability.
 
-Notifying the UI only when necessary to minimize rebuilds.
+3.  **Web Constraint Strategy:**
+    * Instead of maintaining two codebases, I applied a `max-width` constraint strategy. This is a standard industry pattern (used by Instagram/Twitter) to deliver a consistent mobile-first experience on desktop.
 
-3. UI Layer (lib/screens)
-Passive Views: Screens are "dumb" widgets that simply consume data from the Provider.
+---
 
-Gesture Logic: Complex interaction logic (Swipe detection) is handled directly in the UI layer to control navigation intent before passing requests to the Provider.
+## 🚀 How to Run
 
-🧰 Tech Stack & Dependencies
-Framework: Flutter (Dart)
+1.  **Clone the project**
+2.  **Install dependencies:**
+    ```bash
+    flutter pub get
+    ```
+3.  **Setup Assets:**
+    * Ensure `assets/logo.png` exists in the project directory.
+    * Create a `.env` file in the root and add your key: `NASA_API_KEY=YOUR_KEY`
+4.  **Run on Mobile:**
+    ```bash
+    flutter run
+    ```
+5.  **Run on Web (Production Build):**
+    ```bash
+    flutter run -d chrome --web-renderer html
+    ```
 
-State Management: provider (v6.x)
+---
 
-Networking: http
-
-APIs: NASA APOD API
-
-Key Packages:
-
-cached_network_image: For efficient image rendering and caching.
-
-url_launcher: For handling external video links securely.
-
-intl: For precise date formatting (YYYY-MM-DD).
-
-google_fonts: For themed typography (Orbitron).
+**Developed with ❤️ and Flutter.**
