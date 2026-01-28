@@ -7,7 +7,7 @@
 
 **Cosmic Lens Lite** is a robust mobile application designed to explore the cosmos using the **NASA Astronomy Picture of the Day (APOD) API**.
 
-Unlike simple tutorial apps, this project was architected to demonstrate **production-grade engineering principles**. It features robust state management, defensive handling of complex API data (polymorphic media types), intelligent local caching for network efficiency, and a cross-platform responsive design that works seamlessly on both Mobile and Web.
+Unlike simple tutorial apps, this project was architected to demonstrate **production-grade engineering principles**. It features robust state management, defensive handling of complex API data (polym[...]
 
 ---
 
@@ -24,7 +24,7 @@ Unlike simple tutorial apps, this project was architected to demonstrate **produ
     * **Videos:** Handled via a custom "Watch Video" interface that deep-links to YouTube/Vimeo using `url_launcher`, preventing crashes on video-only days.
 
 ### 3. **Performance & Optimization**
-* **Smart In-Memory Caching:** Implements a HashMap-based caching strategy (`Map<String, ApodModel>`). Once a date is fetched, it is stored locally, ensuring **instant load times (0ms)** and zero network cost when swiping back to previously viewed days.
+* **Smart In-Memory Caching:** Implements a HashMap-based caching strategy (`Map<String, ApodModel>`). Once a date is fetched, it is stored locally, ensuring **instant load times (0ms)** and zero netw[...]
 * **Pull-to-Refresh:** Users can pull down to instantly reset the application state to "Today," clearing temporary navigation history.
 
 ### 4. **UI/UX & Responsiveness**
@@ -72,14 +72,46 @@ The project follows a strict **Layered Architecture** to ensure maintainability 
 
 ---
 
-##  📷  Screenshort ![two](https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad)
-![three](https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0)
-![six](https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5)
-![seven](https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036)
-![one](https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb)
-![four](https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379)
-![five](https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4)
+## 📷 Screenshots
 
+Below the screenshots are resized and placed in numeric order (one → two → three → four → five → six → seven). Each image is shown at a consistent width for readability.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb" alt="one" width="480"/><br/>
+  <strong>1. one</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad" alt="two" width="480"/><br/>
+  <strong>2. two</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0" alt="three" width="480"/><br/>
+  <strong>3. three</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379" alt="four" width="480"/><br/>
+  <strong>4. four</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4" alt="five" width="480"/><br/>
+  <strong>5. five</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5" alt="six" width="480"/><br/>
+  <strong>6. six</strong>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036" alt="seven" width="480"/><br/>
+  <strong>7. seven</strong>
+</p>
+
+---
 
 ## 🚀 How to Run
 
