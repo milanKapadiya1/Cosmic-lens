@@ -70,47 +70,29 @@ The project follows a strict **Layered Architecture** to ensure maintainability 
     * `intl`: For precise date formatting (`YYYY-MM-DD`).
     * `google_fonts`: For themed typography (Orbitron).
 
----
+-
 
 ## 📷 Screenshots
 
-Below the screenshots are resized and placed in numeric order (one → two → three → four → five → six → seven). Each image is shown at a consistent width for readability.
+| **Daily Feed & Design** | **Time Travel (Date Picker)** |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb" height="400" alt="Daily Feed" /> | <img src="https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad" height="400" alt="Date Picker" /> |
+| **Dark Mode UI** | **Choosing a Date** |
+
+| **Video Support** | **Web Responsive View** |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0" height="400" alt="Video Player Interface" /> | <img src="https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379" height="400" alt="Responsive Web Layout" /> |
+| **Handling Video Content** | **Desktop Optimized Layout** |
+
+| **Loading State** | **Error Handling** |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4" height="400" alt="Loading Spinner" /> | <img src="https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5" height="400" alt="Error State" /> |
+| **Smooth Loading Indicators** | **Graceful Error Recovery** |
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb" alt="one" width="480"/><br/>
-  <strong>1. one</strong>
+  <strong>7. Navigation Drawer / Settings</strong><br>
+  <img src="https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036" height="400" alt="Navigation" />
 </p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad" alt="two" width="480"/><br/>
-  <strong>2. two</strong>
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0" alt="three" width="480"/><br/>
-  <strong>3. three</strong>
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379" alt="four" width="480"/><br/>
-  <strong>4. four</strong>
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4" alt="five" width="480"/><br/>
-  <strong>5. five</strong>
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5" alt="six" width="480"/><br/>
-  <strong>6. six</strong>
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036" alt="seven" width="480"/><br/>
-  <strong>7. seven</strong>
-</p>
-
 ---
 
 ## 🚀 How to Run
