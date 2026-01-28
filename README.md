@@ -72,18 +72,14 @@ The project follows a strict **Layered Architecture** to ensure maintainability 
 
 ---
 
-## 💡 Engineering Decisions (Interview Talking Points)
+##  📷  Screenshort ![two](https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad)
+![three](https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0)
+![six](https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5)
+![seven](https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036)
+![one](https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb)
+![four](https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379)
+![five](https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4)
 
-1.  **Why Provider?**
-    * Chosen for its lightweight footprint and ease of testing compared to heavier solutions like BLoC, while still offering excellent separation of business logic for this scale of application.
-
-2.  **The "Video Trap" Solution:**
-    * Recognized that NASA's API returns different JSON structures for videos. Implemented a `media_type` check in the Model layer to branch UI logic, ensuring 100% stability.
-
-3.  **Web Constraint Strategy:**
-    * Instead of maintaining two codebases, I applied a `max-width` constraint strategy. This is a standard industry pattern (used by Instagram/Twitter) to deliver a consistent mobile-first experience on desktop.
-
----
 
 ## 🚀 How to Run
 
