@@ -7,7 +7,7 @@
 
 **Cosmic Lens Lite** is a robust mobile application designed to explore the cosmos using the **NASA Astronomy Picture of the Day (APOD) API**.
 
-Unlike simple tutorial apps, this project was architected to demonstrate **production-grade engineering principles**. It features robust state management, defensive handling of complex API data (polymorphic media types), intelligent local caching for network efficiency, and a cross-platform responsive design that works seamlessly on both Mobile and Web.
+Unlike simple tutorial apps, this project was architected to demonstrate **production-grade engineering principles**. It features robust state management, defensive handling of complex API data (polym[...]
 
 ---
 
@@ -24,7 +24,7 @@ Unlike simple tutorial apps, this project was architected to demonstrate **produ
     * **Videos:** Handled via a custom "Watch Video" interface that deep-links to YouTube/Vimeo using `url_launcher`, preventing crashes on video-only days.
 
 ### 3. **Performance & Optimization**
-* **Smart In-Memory Caching:** Implements a HashMap-based caching strategy (`Map<String, ApodModel>`). Once a date is fetched, it is stored locally, ensuring **instant load times (0ms)** and zero network cost when swiping back to previously viewed days.
+* **Smart In-Memory Caching:** Implements a HashMap-based caching strategy (`Map<String, ApodModel>`). Once a date is fetched, it is stored locally, ensuring **instant load times (0ms)** and zero netw[...]
 * **Pull-to-Refresh:** Users can pull down to instantly reset the application state to "Today," clearing temporary navigation history.
 
 ### 4. **UI/UX & Responsiveness**
@@ -70,19 +70,29 @@ The project follows a strict **Layered Architecture** to ensure maintainability 
     * `intl`: For precise date formatting (`YYYY-MM-DD`).
     * `google_fonts`: For themed typography (Orbitron).
 
----
+-
 
-## 💡 Engineering Decisions (Interview Talking Points)
+## 📷 Screenshots
 
-1.  **Why Provider?**
-    * Chosen for its lightweight footprint and ease of testing compared to heavier solutions like BLoC, while still offering excellent separation of business logic for this scale of application.
 
-2.  **The "Video Trap" Solution:**
-    * Recognized that NASA's API returns different JSON structures for videos. Implemented a `media_type` check in the Model layer to branch UI logic, ensuring 100% stability.
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/5d1c7670-8745-450d-82bd-e7815fa830bb" height="400" alt="Daily Feed" /> | <img src="https://github.com/user-attachments/assets/22d88ca9-14b7-495d-b252-30a6a6863cad" height="400" alt="Date Picker" /> |
 
-3.  **Web Constraint Strategy:**
-    * Instead of maintaining two codebases, I applied a `max-width` constraint strategy. This is a standard industry pattern (used by Instagram/Twitter) to deliver a consistent mobile-first experience on desktop.
 
+
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/d2ffc0cd-c3e4-4fb1-a640-772cc7337ff0" height="400" alt="Video Player Interface" /> | <img src="https://github.com/user-attachments/assets/571f2b84-8ed1-4a83-bff4-b1598f032379" height="400" alt="Responsive Web Layout" /> |
+
+
+
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/94814e96-e0ce-4410-81d1-3f61a70a79b4" height="400" alt="Loading Spinner" /> | <img src="https://github.com/user-attachments/assets/76e942a9-99e2-4f47-a44b-f7f02f9b0fc5" height="400" alt="Error State" /> |
+
+
+<p align="center">
+  <strong>7. Navigation Drawer / Settings</strong><br>
+  <img src="https://github.com/user-attachments/assets/6ac24ef3-9b57-4939-b755-96f7cc651036" height="400" alt="Navigation" />
+</p>
 ---
 
 ## 🚀 How to Run
