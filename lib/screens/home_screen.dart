@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../providers/apod_provider.dart';
+import '../models/planet_model.dart';
+import '../services/planet_service.dart';
+import 'dart:ui'; // For ImageFilter
+
+import '../widgets/orbiton_drawer.dart'; // Import Drawer
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,235 +14,329 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DateTime _currentDate = DateTime.now();
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Add Key
+  int _selectedIndex = 0; // Default to Mars (index 0)
+  Map<String, String>? marsWeatherData;
 
   @override
   void initState() {
     super.initState();
-    // Fetch data when screen initializes
-    Future.microtask(
-        () => Provider.of<ApodProvider>(context, listen: false).getData());
+    loadLiveData();
+  }
+
+  Future<void> loadLiveData() async {
+    final planet = Planet.planets[_selectedIndex];
+    if (planet.name == 'Mars') {
+      final data = await PlanetService().fetchMarsWeather();
+      if (mounted && data != null) {
+        setState(() {
+          marsWeatherData = data;
+        });
+      }
+    } else {
+      if (marsWeatherData != null) {
+        setState(() {
+          marsWeatherData = null;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Current Planet Data
+    final planet = Planet.planets[_selectedIndex];
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text('Cosmic Lens Lite',
-            style: GoogleFonts.orbitron(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today, color: Colors.white),
-            onPressed: () async {
-              final DateTime? picked = await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(1995, 6, 16),
-                lastDate: DateTime.now(),
-                builder: (context, child) {
-                  return Theme(
-                    data: Theme.of(context).copyWith(
-                      colorScheme: const ColorScheme.dark(
-                        primary: Color(0xFF0B3D91),
-                        onPrimary: Colors.white,
-                        surface: Colors.black,
-                        onSurface: Colors.white,
-                      ),
-                    ),
-                    child: child!,
-                  );
-                },
-              );
-              if (picked != null) {
-                if (context.mounted) {
-                  setState(() {
-                    _currentDate = picked;
-                  });
-                  Provider.of<ApodProvider>(context, listen: false)
-                      .getData(date: picked);
-                }
-              }
+      key: _scaffoldKey, // Assign Key
+      drawer: const OrbitonDrawer(), // Assign Drawer
+      backgroundColor: const Color(0xFF010101), // Deep Space Black
+      body: Stack(
+        children: [
+          // Layer 1: Background Image with Animation
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 800),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
             },
+            child: SizedBox(
+              key: ValueKey<String>(planet.assetPath),
+              height: double.infinity,
+              width: double.infinity,
+              child: planet.assetPath.startsWith('http')
+                  ? Image.network(
+                      planet.assetPath,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      planet.assetPath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(color: Colors.black),
+                    ),
+            ),
           ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0B3D91), // NASA Blue
-              Colors.black,
-            ],
+
+          // Layer 2: Gradient Overlay (Transparent -> Black)
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black26, // Transparent-ish at top
+                  Colors.transparent,
+                  Colors.black87,
+                  Colors.black, // Solid black at bottom
+                ],
+                stops: [0.0, 0.2, 0.6, 1.0],
+              ),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Consumer<ApodProvider>(
-            builder: (context, provider, child) {
-              if (provider.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
 
-              if (provider.errorMessage.isNotEmpty) {
-                return const Center(
-                  child: Text(
-                    'Data unavailable',
-                    style: TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-
-              if (provider.data != null) {
-                final apod = provider.data!;
-                return GestureDetector(
-                  onHorizontalDragEnd: (details) {
-                    if (details.primaryVelocity! < 0) {
-                      // Swipe Left - Previous Day
-                      final tenDaysAgo =
-                          DateTime.now().subtract(const Duration(days: 10));
-                      if (_currentDate.isAfter(tenDaysAgo)) {
-                        setState(() {
-                          _currentDate =
-                              _currentDate.subtract(const Duration(days: 1));
-                        });
-                        Provider.of<ApodProvider>(context, listen: false)
-                            .getData(date: _currentDate);
-                      }
-                    } else if (details.primaryVelocity! > 0) {
-                      // Swipe Right - Next Day
-                      final today = DateTime.now();
-                      // Compare dates ignoring time
-                      final isToday = _currentDate.year == today.year &&
-                          _currentDate.month == today.month &&
-                          _currentDate.day == today.day;
-
-                      if (!isToday && _currentDate.isBefore(today)) {
-                        setState(() {
-                          _currentDate =
-                              _currentDate.add(const Duration(days: 1));
-                        });
-                        Provider.of<ApodProvider>(context, listen: false)
-                            .getData(date: _currentDate);
-                      }
-                    }
-                  },
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 600),
-                      child: RefreshIndicator(
-                        color: Colors.white,
-                        backgroundColor: const Color(0xFF0B3D91),
-                        onRefresh: () async {
-                          setState(() {
-                            _currentDate = DateTime.now();
-                          });
-                          await Provider.of<ApodProvider>(context,
-                                  listen: false)
-                              .getData();
+          // Layer 3: Content
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header: Orbiton Logo & Menu
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Orion',
+                        style: GoogleFonts.outfit(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.menu,
+                            color: Colors.white, size: 28),
+                        onPressed: () {
+                          _scaffoldKey.currentState
+                              ?.openDrawer(); // Open Drawer
                         },
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 100),
-                          child: ListView(
-                            key: ValueKey(_currentDate),
-                            padding: const EdgeInsets.all(16.0),
-                            children: [
-                              Text(
-                                apod.title,
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Card(
-                                elevation: 10,
-                                shadowColor: Colors.blueAccent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: apod.mediaType == 'video'
-                                      ? GestureDetector(
-                                          onTap: () async {
-                                            final Uri uri = Uri.parse(apod.url);
-                                            if (!await launchUrl(uri)) {
-                                              // Handle error silently or show snackbar
-                                              debugPrint(
-                                                  'Could not launch $uri');
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 200,
-                                            width: double.infinity,
-                                            color: Colors
-                                                .black45, // Generic space background
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Icon(Icons.play_circle_fill,
-                                                    color: Colors.white,
-                                                    size: 60),
-                                                SizedBox(height: 8),
-                                                Text(
-                                                  'Watch Video',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : CachedNetworkImage(
-                                          imageUrl: apod.url,
-                                          placeholder: (context, url) =>
-                                              const SizedBox(
-                                            height: 200,
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error,
-                                                  color: Colors.red),
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                apod.date,
-                                style: const TextStyle(
-                                    color: Colors.grey, fontSize: 14),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                apod.explanation,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Planet Tabs
+                SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 16),
+                    itemCount: Planet.planets.length,
+                    itemBuilder: (context, index) {
+                      final isSelected = _selectedIndex == index;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                          loadLiveData();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.white.withOpacity(0.2)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          child: Text(
+                            Planet.planets[index].name,
+                            style: GoogleFonts.outfit(
+                              color: isSelected ? Colors.white : Colors.grey,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const Spacer(), // Push content to bottom
+
+                // Main Content
+                // Main Content
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Hero Tagline
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        planet.tagline,
+                        maxLines: 3,
+                        style: GoogleFonts.outfit(
+                          fontSize: 42,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.1,
                         ),
                       ),
                     ),
-                  ),
-                );
-              }
+                    const SizedBox(height: 30),
 
-              return const Center(
-                  child:
-                      Text('No Data', style: TextStyle(color: Colors.white)));
-            },
+                    // Stats Row
+                    Builder(builder: (context) {
+                      final isMars = planet.name == 'Mars';
+                      final showLive = isMars && marsWeatherData != null;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          children: [
+                            _buildHeroStat(
+                              showLive ? 'Live Temp' : planet.stat1Label,
+                              showLive
+                                  ? marsWeatherData!['temp']!
+                                  : planet.stat1Value,
+                              labelColor: showLive
+                                  ? const Color(0xFFEB8530)
+                                  : Colors.grey,
+                              subtext: showLive
+                                  ? 'Latest: ${marsWeatherData!['date']}'
+                                  : null,
+                            ),
+                            Container(
+                              height: 40,
+                              width: 1,
+                              color: Colors.white24,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                            ),
+                            _buildHeroStat(
+                                planet.stat2Label, planet.stat2Value),
+                          ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 30),
+
+                    // Bottom Glass Cards
+                    SizedBox(
+                      height: 120,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        itemCount: planet.details.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final detail = planet.details[index];
+                          return _buildGlassCard(detail);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 80), // Space for Bottom Bar
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroStat(String label, String value,
+      {Color labelColor = Colors.grey, String? subtext}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.outfit(
+            color: labelColor,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.outfit(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        if (subtext != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtext,
+            style: GoogleFonts.outfit(
+              color: Colors.white54,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildGlassCard(Map<String, String> detail) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          width: 130, // Fixed width for cards
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white24, width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.public,
+                      color: Colors.white70, size: 20), // Generic icon
+                  // Determine icon based on title if possible
+                  // or just simple layout
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    detail['value']!,
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    detail['title']!,
+                    style: GoogleFonts.outfit(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
