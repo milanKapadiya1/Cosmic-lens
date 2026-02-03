@@ -66,16 +66,23 @@ Consuming the NASA APOD API presents unique challenges: polymorphic data types (
 
 ## 📷 Screenshots
 
-![one](https://github.com/user-attachments/assets/8f8bf90b-854d-44db-ba85-5512160bb1f4)
-![two](https://github.com/user-attachments/assets/44d897d8-ee8c-462a-a43a-ce6bc4809062)
-![three](https://github.com/user-attachments/assets/0cca38c8-0d68-495a-a9d0-061740d866b4)
-![four](https://github.com/user-attachments/assets/148a367c-f291-447c-a684-55e2acb674d9)
-![five](https://github.com/user-attachments/assets/d50bf2c9-258e-4cf0-8ab6-fb76b4e29582)
-![six](https://github.com/user-attachments/assets/a1e17c7c-5c64-4318-8af9-da11b70757e5)
-![seven](https://github.com/user-attachments/assets/8325383c-2ff8-4e04-86ca-cfdc37cae320)
-![eight](https://github.com/user-attachments/assets/1098d078-bfdd-4df4-a276-057450b64259)
-![nine](https://github.com/user-attachments/assets/9c0ca785-020d-4e41-b24b-feee7ee4ffdb)
-
+<table align="center">
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/8f8bf90b-854d-44db-ba85-5512160bb1f4" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/44d897d8-ee8c-462a-a43a-ce6bc4809062" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/0cca38c8-0d68-495a-a9d0-061740d866b4" width="250"/></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/148a367c-f291-447c-a684-55e2acb674d9" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/d50bf2c9-258e-4cf0-8ab6-fb76b4e29582" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/a1e17c7c-5c64-4318-8af9-da11b70757e5" width="250"/></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/8325383c-2ff8-4e04-86ca-cfdc37cae320" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/1098d078-bfdd-4df4-a276-057450b64259" width="250"/></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/9c0ca785-020d-4e41-b24b-feee7ee4ffdb" width="250"/></td>
+  </tr>
+</table>
 
 
 
